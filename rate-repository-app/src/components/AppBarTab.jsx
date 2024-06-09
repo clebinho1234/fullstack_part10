@@ -25,18 +25,38 @@ const AppBarTab = ({ textStyle, pressableStyle }) => {
                         <Text style={textStyle}>Repositories</Text>
                     </Link>
             </Pressable>
-            {!authenticate.data.me && 
+            {authenticate.data.me && (
+                <Pressable style={pressableStyle}>
+                    <Link to="/create-review">
+                        <Text style={textStyle}>Create a review</Text>
+                    </Link>
+                </Pressable>
+            )}
+            {authenticate.data.me && (
+                <Pressable style={pressableStyle}>
+                    <Link to="/user-review">
+                        <Text style={textStyle}>My reviews</Text>
+                    </Link>
+                </Pressable>
+            )}
+            {!authenticate.data.me ? (
                 <Pressable style={pressableStyle}>
                     <Link to="/signin">
                         <Text style={textStyle}>Sign in</Text>
                     </Link>
                 </Pressable>
-            }
-            {authenticate.data.me && 
+            ) : (
                 <Pressable style={pressableStyle} onPress={handleSignOut}>
                     <Text style={textStyle}>Sign out</Text>
                 </Pressable>
-            }
+            )}
+            {!authenticate.data.me && (
+                <Pressable style={pressableStyle}>
+                    <Link to="/signup">
+                        <Text style={textStyle}>Sign up</Text>
+                    </Link>
+                </Pressable>
+            )}
         </>
     );
 };

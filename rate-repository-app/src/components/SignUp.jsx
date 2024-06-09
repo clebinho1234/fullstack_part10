@@ -1,8 +1,8 @@
 import { Text, TextInput, Pressable, View, StyleSheet } from 'react-native';
 import { useFormik } from 'formik';
-import useSignIn from '../hooks/useSignIn';
 import theme from '../theme';
 import * as yup from 'yup';
+import useSignUp from '../hooks/useSignUp';
 
 const styles = StyleSheet.create({
     container: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export const SignInContainer = ({ formik }) => {
+export const SignUpContainer = ({ formik }) => {
     return (
         <View style={styles.container}>
             <TextInput
@@ -68,8 +68,21 @@ export const SignInContainer = ({ formik }) => {
             {formik.touched.password && formik.errors.password && (
             <Text style={styles.textError}>{formik.errors.password}</Text>
             )}
+            <TextInput
+                style={[
+                    styles.input,
+                    formik.touched.passwordConfirmation && formik.errors.passwordConfirmation && styles.inputError
+                ]}
+                placeholder="PasswordConfirmation"
+                secureTextEntry={true}
+                value={formik.values.passwordConfirmation}
+                onChangeText={formik.handleChange('passwordConfirmation')}
+            />
+            {formik.touched.passwordConfirmation && formik.errors.passwordConfirmation && (
+            <Text style={styles.textError}>{formik.errors.passwordConfirmation}</Text>
+            )}
             <Pressable style={styles.button} onPress={formik.handleSubmit}>
-                <Text style={styles.buttonText}>Sign in</Text>
+                <Text style={styles.buttonText}>Sign up</Text>
             </Pressable>
         </View>
       );
@@ -78,25 +91,33 @@ export const SignInContainer = ({ formik }) => {
 const initialValues = {
   username: '',
   password: '',
+  passwordConfirmation: '',
 };
 
 const validationSchema = yup.object().shape({
-  username: yup
-    .string()
-    .required('Username is required'),
-  password: yup
-    .string()
-    .required('Password is required'),
+    username: yup
+        .string()
+        .required('Username is required')
+        .min(5,'Username must be at least 5 caractheres')
+        .max(30, 'Username must be at most 30 caractheres'),
+    password: yup
+        .string()
+        .required('Password is required')
+        .min(5,'Password must be at least 5 caractheres')
+        .max(30, 'Password must be at most 30 caractheres'),
+    passwordConfirmation: yup
+        .string()
+        .oneOf([yup.ref('password'), null], "Passwords must match")
+        .required('Password confirmation is required')
 });
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
+const SignUp = () => {
+  const [signUp] = useSignUp();
 
     const onSubmit = async (values) => {
         const { username, password } = values;
-
         try {
-            await signIn({ username, password });
+            await signUp({ username, password });
         } catch (e) {
             console.log(e);
         }
@@ -109,8 +130,8 @@ const SignIn = () => {
   });
 
   return (
-    <SignInContainer formik={formik}/>
+    <SignUpContainer formik={formik}/>
   );
 };
 
-export default SignIn;
+export default SignUp;

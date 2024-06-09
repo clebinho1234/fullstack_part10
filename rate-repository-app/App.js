@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'react-native';
 import { ApolloProvider } from '@apollo/client';
 import { NativeRouter } from 'react-router-native';
 
